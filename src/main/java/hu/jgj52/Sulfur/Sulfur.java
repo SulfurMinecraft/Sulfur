@@ -3,6 +3,7 @@ package hu.jgj52.Sulfur;
 import com.google.gson.*;
 import hu.jgj52.Sulfur.Commands.*;
 import hu.jgj52.Sulfur.Listeners.*;
+import hu.jgj52.Sulfur.Utils.Configuration;
 import hu.jgj52.Sulfur.Utils.LoadedPlugin;
 import hu.jgj52.Sulfur.Utils.Plugin;
 import hu.jgj52.Sulfur.Utils.Server;

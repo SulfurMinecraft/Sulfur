@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
-public abstract class Configuration {
+public class Configuration {
     private final File file;
     private JsonObject config;
     public Configuration(String name, Plugin plugin) {
