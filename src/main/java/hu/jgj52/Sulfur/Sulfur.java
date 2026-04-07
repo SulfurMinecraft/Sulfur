@@ -124,40 +124,4 @@ public class Sulfur {
             }
         }
     }
-
-    public static Collection<Player> getOnlinePlayers() {
-
-        return MinecraftServer.getConnectionManager().getOnlinePlayers();
-
-    }
-
-    public static Pos getHighestPoint(Pos initialPosition, Instance instance) {
-
-        int highest = 319;
-
-        for (int y = 319; y > -64; y--) {
-
-            BlockVec block = new BlockVec(
-                    initialPosition.blockX(),
-                    y,
-                    initialPosition.blockZ()
-            );
-
-            if (instance.getBlock(block) != Block.AIR) {
-
-                highest = y;
-                break;
-
-            }
-
-        }
-
-        return new Pos(
-                initialPosition.blockX(),
-                highest,
-                initialPosition.blockZ()
-        );
-
-    }
-
 }
