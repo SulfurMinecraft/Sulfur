@@ -10,6 +10,9 @@ public class PlayerJoinListener extends Listener {
     @Event
     public void onJoin(AsyncPlayerConfigurationEvent event) {
         event.setSpawningInstance(Sulfur.ic);
-        event.getPlayer().setRespawnPoint(new Pos(0.5, 0, 0.5));
+
+        event.getSpawningInstance().loadChunk(new Pos(0.5, 0, 0.5));
+
+        event.getPlayer().setRespawnPoint(Sulfur.getHighestPoint(new Pos(0.5, 0, 0.5), event.getSpawningInstance()));
     }
 }
