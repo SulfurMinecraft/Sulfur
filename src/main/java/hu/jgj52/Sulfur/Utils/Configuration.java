@@ -31,7 +31,7 @@ public class Configuration {
             return;
         }
 
-        file = new File(loaded.getName(), name + ".yml");
+        file = new File("plugins" + File.separator + loaded.getName(), name + ".yml");
 
         Map<String, Object> defaults;
         try (InputStream defIn = plugin.getClass().getClassLoader()
@@ -43,6 +43,7 @@ public class Configuration {
         }
 
         if (!file.exists()) {
+            file.getParentFile().mkdirs();
             try (InputStream in = plugin.getClass().getClassLoader()
                     .getResourceAsStream(name + ".yml");
                  FileOutputStream out = new FileOutputStream(file)) {

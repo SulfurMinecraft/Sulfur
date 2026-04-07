@@ -113,8 +113,8 @@ public class Sulfur {
                     Class<?> clazz = cl.loadClass(data.getMain());
                     Plugin plugin = (Plugin) clazz.getDeclaredConstructors()[0].newInstance();
                     data.setPlugin(plugin);
-                    plugin.onEnable();
                     loadedPlugins.put(data.getName(), data);
+                    plugin.onEnable();
                 } catch (ClassNotFoundException | InstantiationException |
                          IllegalAccessException | InvocationTargetException e) {
                     throw new RuntimeException(e);
