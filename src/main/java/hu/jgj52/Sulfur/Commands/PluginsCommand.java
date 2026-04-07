@@ -16,8 +16,6 @@ public class PluginsCommand extends Command {
 
         setDefaultExecutor((sender, _) -> {
 
-
-
             Component plugins = Component.empty();
             boolean first = true;
 
