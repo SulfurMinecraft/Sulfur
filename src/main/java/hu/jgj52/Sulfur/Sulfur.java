@@ -23,7 +23,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.HashMap;
+import java.nio.file.Files;import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -84,7 +84,7 @@ public class Sulfur {
     private static void registerPlugins() {
         File folder = new File("plugins");
         try {
-            if (!folder.exists()) folder.createNewFile();
+            if (!folder.exists()) Files.createDirectory(folder.toPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
