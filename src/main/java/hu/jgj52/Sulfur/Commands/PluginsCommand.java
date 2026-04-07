@@ -14,7 +14,7 @@ public class PluginsCommand extends Command {
 
         setDefaultExecutor((sender, _) -> {
             Component plugins = MiniMessage.miniMessage().deserialize(
-                    Sulfur.conf.get("messages").getAsJsonObject().get("plugin").getAsString(),
+                    Sulfur.conf.get("messages").getAsJsonObject().get("plugins").getAsString(),
                     Placeholder.parsed("count", String.valueOf(Sulfur.loadedPlugins.size()))
             );
             boolean first = true;
