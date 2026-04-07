@@ -56,3 +56,5 @@ public class Main implements Plugin {
     }
 }
 ```
+
+also render distance in server.yml does nothing yet
