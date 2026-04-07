@@ -1,0 +1,16 @@
+server:
+  host: 0.0.0.0
+  port: 25565
+  max-players: 20
+  motd: "<gray>another server you ignore this option on</gray>"
+  brand: "Sulfur"
+  shutdownKick: "<red>Server is shutting down!</red>"
+  renderDistance: 16
+  onlineMode: true
+  velocity: false
+  velocitySecret: ""
+  bungeecord: false
+messages:
+  notEnoughArgsInVersionCommand: "<red>You need to provide the plugin you want to get the version of</red>"
+  pluginNotFound: "<red>Plugin <plugin> not found!</red>"
+  version: "<name> version <green><version></green><newLine>Authors: <authors>"
