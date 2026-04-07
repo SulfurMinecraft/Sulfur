@@ -13,4 +13,5 @@ server:
 messages:
   notEnoughArgsInVersionCommand: "<red>You need to provide the plugin you want to get the version of</red>"
   pluginNotFound: "<red>Plugin <plugin> not found!</red>"
-  version: "<name> version <green><version></green><newLine>Authors: <authors>"
+  plugins: "<white>Plugins (<count>): </white>"
+  version: "<white><name> version <green><version></green><newLine>Authors: <authors></white>"

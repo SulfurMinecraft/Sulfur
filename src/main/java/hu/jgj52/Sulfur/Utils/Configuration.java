@@ -18,10 +18,10 @@ import java.util.Map;
 public abstract class Configuration {
     private final File file;
     private JsonObject config;
-    public Configuration() {
+    public Configuration(String name, Plugin plugin) {
         LoadedPlugin loaded = null;
         for (LoadedPlugin lp : Sulfur.loadedPlugins.values()) {
-            if (lp.getPlugin() == getPlugin()) {
+            if (lp.getPlugin() == plugin) {
                 loaded = lp;
                 break;
             }
@@ -31,20 +31,20 @@ public abstract class Configuration {
             return;
         }
 
-        file = new File(loaded.getName(), getName() + ".yml");
+        file = new File(loaded.getName(), name + ".yml");
 
         Map<String, Object> defaults;
-        try (InputStream defIn = getPlugin().getClass().getClassLoader()
-                .getResourceAsStream(getName() + ".yml")) {
-            if (defIn == null) throw new RuntimeException(getName() + ".yml not in jar!");
+        try (InputStream defIn = plugin.getClass().getClassLoader()
+                .getResourceAsStream(name + ".yml")) {
+            if (defIn == null) throw new RuntimeException(name + ".yml not in jar!");
             defaults = new Yaml().load(defIn);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         if (!file.exists()) {
-            try (InputStream in = getPlugin().getClass().getClassLoader()
-                    .getResourceAsStream(getName() + ".yml");
+            try (InputStream in = plugin.getClass().getClassLoader()
+                    .getResourceAsStream(name + ".yml");
                  FileOutputStream out = new FileOutputStream(file)) {
                 byte[] buffer = new byte[1024];
                 int bytesRead;
@@ -130,7 +130,4 @@ public abstract class Configuration {
         if (!element.isJsonObject()) throw new RuntimeException("YAML root is not an object!");
         config = element.getAsJsonObject();
     }
-
-    public abstract String getName();
-    public abstract Plugin getPlugin();
 }
