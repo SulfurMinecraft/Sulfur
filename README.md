@@ -25,7 +25,7 @@ Here's an example:
     <dependency>
         <groupId>hu.jgj52</groupId>
         <artifactId>Sulfur</artifactId>
-        <version>1.0</version>
+        <version>1.5</version>
         <scope>provided</scope>
     </dependency>
 </dependencies>

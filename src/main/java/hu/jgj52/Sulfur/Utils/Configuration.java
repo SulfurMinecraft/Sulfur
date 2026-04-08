@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.jar.JarEntry;
 
 @SuppressWarnings("unchecked")
 public class Configuration {
@@ -33,19 +34,19 @@ public class Configuration {
 
         file = new File("plugins" + File.separator + loaded.getName(), name + ".yml");
 
+        JarEntry entry = loaded.getJarFile().getJarEntry(name + ".yml");
+        if (entry == null) throw new RuntimeException(name + ".yml not in jar!");
+
         Map<String, Object> defaults;
-        try (InputStream defIn = plugin.getClass().getClassLoader()
-                .getResourceAsStream(name + ".yml")) {
-            if (defIn == null) throw new RuntimeException(name + ".yml not in jar!");
-            defaults = new Yaml().load(defIn);
+        try (InputStream is = loaded.getJarFile().getInputStream(entry)) {
+            defaults = new Yaml().load(is);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         if (!file.exists()) {
             file.getParentFile().mkdirs();
-            try (InputStream in = plugin.getClass().getClassLoader()
-                    .getResourceAsStream(name + ".yml");
+            try (InputStream in = loaded.getJarFile().getInputStream(entry);
                  FileOutputStream out = new FileOutputStream(file)) {
                 byte[] buffer = new byte[1024];
                 int bytesRead;

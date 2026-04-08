@@ -21,9 +21,11 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarEntry;
@@ -92,6 +94,20 @@ public class Sulfur {
         File[] jars = folder.listFiles((_, name) -> name.endsWith(".jar"));
         if (jars == null) return;
 
+        URLClassLoader cl = new URLClassLoader(
+                Arrays.stream(jars)
+                        .map(jar -> {
+                            try {
+                                return jar.toURI().toURL();
+                            } catch (MalformedURLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
+                        .toList()
+                        .toArray(new URL[0]),
+                Sulfur.class.getClassLoader()
+        );
+
         for (File jar : jars) {
             try (JarFile jarFile = new JarFile(jar)) {
                 JarEntry entry = jarFile.getJarEntry("plugin.yml");
@@ -100,14 +116,11 @@ public class Sulfur {
 
                 try (InputStream is = jarFile.getInputStream(entry)) {
                     LoadedPlugin data = new Yaml().loadAs(is, LoadedPlugin.class);
-                    URLClassLoader cl = new URLClassLoader(
-                            new URL[]{jar.toURI().toURL()},
-                            Sulfur.class.getClassLoader()
-                    );
 
                     Class<?> clazz = cl.loadClass(data.getMain());
                     Plugin plugin = (Plugin) clazz.getDeclaredConstructors()[0].newInstance();
                     data.setPlugin(plugin);
+                    data.setJarFile(jarFile);
                     loadedPlugins.put(data.getName(), data);
                     plugin.onEnable();
                 } catch (ClassNotFoundException | InstantiationException |

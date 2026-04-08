@@ -7,22 +7,27 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
 import java.util.List;
+import java.util.jar.JarFile;
 
 public class LoadedPlugin {
     private String main;
     private String name;
     private List<String> authors;
     private String version;
+    private List<String> depend;
     private Component message;
     private Plugin plugin;
+    private JarFile jarFile;
 
     public LoadedPlugin() {
         this.main = "";
         this.name = "";
         this.authors = List.of();
         this.version = "";
+        this.depend = List.of();
         this.message = Component.empty();
         this.plugin = null;
+        this.jarFile = null;
     }
 
     public String getMain() {
@@ -61,6 +66,14 @@ public class LoadedPlugin {
         updateMessage();
     }
 
+    public List<String> getDepend() {
+        return depend;
+    }
+
+    public void setDepend(List<String> depend) {
+        this.depend = depend;
+    }
+
     public Component getMessage() {
         return message;
     }
@@ -89,5 +102,13 @@ public class LoadedPlugin {
 
     public void setPlugin(Plugin plugin) {
         this.plugin = plugin;
+    }
+
+    public JarFile getJarFile() {
+        return jarFile;
+    }
+
+    public void setJarFile(JarFile jarFile) {
+        this.jarFile = jarFile;
     }
 }
