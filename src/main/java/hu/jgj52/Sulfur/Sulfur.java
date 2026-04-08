@@ -20,6 +20,7 @@ import net.minestom.server.instance.anvil.AnvilLoader;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.generator.UnitModifier;
+import net.minestom.server.potion.PotionType;
 import org.yaml.snakeyaml.Yaml;
 
 import javax.swing.text.Position;
