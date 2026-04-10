@@ -33,9 +33,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class Sulfur {
+
     public static InstanceContainer ic;
     public static JsonObject conf;
     public static Map<String, LoadedPlugin> loadedPlugins = new HashMap<>();
+    public static boolean isOnlineServer = false; // False by default
 
     static void main() {
         conf = new Server().getConfig();
@@ -45,6 +47,8 @@ public class Sulfur {
                 serverConf.get("bungeecord").getAsBoolean() ? new Auth.Bungee() :
                 serverConf.get("onlineMode").getAsBoolean() ? new Auth.Online() : new Auth.Offline()
         );
+
+        isOnlineServer = serverConf.get("onlineMode").getAsBoolean();
 
         InstanceManager im = MinecraftServer.getInstanceManager();
         ic = im.createInstanceContainer(new AnvilLoader("worlds/world"));
