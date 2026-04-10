@@ -37,6 +37,7 @@ public class Sulfur {
     public static InstanceContainer ic;
     public static JsonObject conf;
     public static Map<String, LoadedPlugin> loadedPlugins = new HashMap<>();
+    public static Map<Plugin, LoadedPlugin> pluginLookup = new HashMap<>();
     public static Auth auth;
 
     static void main() {
@@ -127,6 +128,7 @@ public class Sulfur {
                     data.setPlugin(plugin);
                     data.setJarFile(jarFile);
                     loadedPlugins.put(data.getName(), data);
+                    pluginLookup.put(plugin, data);
                     plugin.onEnable();
                 } catch (ClassNotFoundException | InstantiationException |
                          IllegalAccessException | InvocationTargetException e) {
@@ -139,11 +141,6 @@ public class Sulfur {
     }
 
     public static File getDataFolder(Plugin plugin) {
-        for (LoadedPlugin loaded : loadedPlugins.values()) {
-            if (loaded.getPlugin() == plugin) {
-                return new File("plugins", loaded.getName());
-            }
-        }
-        return new File("plugins", "null");
+        return new File("plugins", pluginLookup.get(plugin).getName());
     }
 }
