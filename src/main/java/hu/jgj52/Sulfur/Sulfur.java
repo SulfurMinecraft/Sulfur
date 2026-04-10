@@ -137,4 +137,13 @@ public class Sulfur {
             }
         }
     }
+
+    public static File getDataFolder(Plugin plugin) {
+        for (LoadedPlugin loaded : loadedPlugins.values()) {
+            if (loaded.getPlugin() == plugin) {
+                return new File("plugins", loaded.getName());
+            }
+        }
+        return new File("plugins", "null");
+    }
 }
