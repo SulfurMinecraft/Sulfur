@@ -37,18 +37,15 @@ public class Sulfur {
     public static InstanceContainer ic;
     public static JsonObject conf;
     public static Map<String, LoadedPlugin> loadedPlugins = new HashMap<>();
-    public static boolean isOnlineServer = false; // False by default
+    public static Auth auth;
 
     static void main() {
         conf = new Server().getConfig();
         JsonObject serverConf = conf.get("server").getAsJsonObject();
-        MinecraftServer server = MinecraftServer.init(
-                serverConf.get("velocity").getAsBoolean() ? new Auth.Velocity(serverConf.get("velocitySecret").getAsString()) :
+        auth = serverConf.get("velocity").getAsBoolean() ? new Auth.Velocity(serverConf.get("velocitySecret").getAsString()) :
                 serverConf.get("bungeecord").getAsBoolean() ? new Auth.Bungee() :
-                serverConf.get("onlineMode").getAsBoolean() ? new Auth.Online() : new Auth.Offline()
-        );
-
-        isOnlineServer = serverConf.get("onlineMode").getAsBoolean();
+                serverConf.get("onlineMode").getAsBoolean() ? new Auth.Online() : new Auth.Offline();
+        MinecraftServer server = MinecraftServer.init(auth);
 
         InstanceManager im = MinecraftServer.getInstanceManager();
         ic = im.createInstanceContainer(new AnvilLoader("worlds/world"));
