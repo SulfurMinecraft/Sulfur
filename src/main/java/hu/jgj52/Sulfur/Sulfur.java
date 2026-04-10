@@ -141,12 +141,10 @@ public class Sulfur {
     }
 
     public static File getDataFolder(Plugin plugin) {
-        LoadedPlugin data = pluginLookup.get(plugin);
-        if (data == null) {
-            throw new IllegalStateException(
-                    "Plugin not registered in pluginLookup: " + plugin.getClass().getName()
-            );
+        LoadedPlugin loaded = pluginLookup.get(plugin);
+        if (loaded != null) {
+            return new File("plugins", loaded.getName());
         }
-        return new File("plugins", data.getName());
+        return new File("plugins", "null");
     }
 }
