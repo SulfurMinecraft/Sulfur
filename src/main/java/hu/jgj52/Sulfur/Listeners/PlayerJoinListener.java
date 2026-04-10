@@ -17,9 +17,19 @@ public class PlayerJoinListener extends Listener {
         event.getPlayer().setRespawnPoint(getHighestPoint(new Pos(0.5, 0, 0.5), event.getSpawningInstance()));
     }
 
-    public static Pos getHighestPoint(Pos initialPosition, Instance instance) {
+    private static Pos getHighestPoint(Pos initialPosition, Instance instance) {
 
         int highest = 319;
+
+        try {
+
+            instance.loadChunk(initialPosition).get();
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+
+        }
 
         for (int y = 319; y > -64; y--) {
 
