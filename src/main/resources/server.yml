@@ -10,6 +10,13 @@ server:
   velocity: false
   velocitySecret: ""
   bungeecord: false
+  storeInPostgres: false
+  postgres:
+    host: 127.0.0.1
+    port: 5432
+    database: postgres
+    user: postgres
+    password: admin
 messages:
   notEnoughArgsInVersionCommand: "<red>You need to provide the plugin you want to get the version of</red>"
   pluginNotFound: "<red>Plugin <plugin> not found!</red>"

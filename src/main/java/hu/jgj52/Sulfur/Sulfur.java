@@ -1,6 +1,8 @@
 package hu.jgj52.Sulfur;
 
 import com.google.gson.*;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import hu.jgj52.Sulfur.Commands.*;
 import hu.jgj52.Sulfur.Listeners.*;
 import hu.jgj52.Sulfur.Utils.LoadedPlugin;
@@ -26,6 +28,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,16 +39,17 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class Sulfur {
-
     public static InstanceContainer ic;
     public static JsonObject conf;
     public static Map<String, LoadedPlugin> loadedPlugins = new HashMap<>();
-    public static Map<Plugin, LoadedPlugin> pluginLookup = new HashMap<>();
     public static Auth auth;
+    public static boolean local;
+    public static HikariDataSource ds;
 
     static void main() {
         conf = new Server().getConfig();
         JsonObject serverConf = conf.get("server").getAsJsonObject();
+        local = !serverConf.get("storeInPostgres").getAsBoolean();
         auth = serverConf.get("velocity").getAsBoolean() ? new Auth.Velocity(serverConf.get("velocitySecret").getAsString()) :
                 serverConf.get("bungeecord").getAsBoolean() ? new Auth.Bungee() :
                 serverConf.get("onlineMode").getAsBoolean() ? new Auth.Online() : new Auth.Offline();
@@ -57,6 +64,46 @@ public class Sulfur {
         });
 
         ic.setChunkSupplier(LightingChunk::new);
+
+        if (!local) {
+            JsonObject pgConf = serverConf.get("postgres").getAsJsonObject();
+            HikariConfig config = new HikariConfig();
+
+            config.setJdbcUrl("jdbc:postgresql://" + pgConf.get("host").getAsString() + ":" + pgConf.get("port").getAsInt() + "/" + pgConf.get("database").getAsString());
+            config.setUsername(pgConf.get("user").getAsString());
+            config.setPassword(pgConf.get("password").getAsString());
+
+            config.setMaximumPoolSize(10);
+            config.setMinimumIdle(2);
+
+            ds = new HikariDataSource(config);
+
+            try (Connection conn = ds.getConnection(); Statement st = conn.createStatement()) {
+                st.execute("""
+                        CREATE TABLE IF NOT EXISTS sulfur_data (
+                            name VARCHAR NOT NULL,
+                            location VARCHAR NOT NULL,
+                            data JSONB NOT NULL DEFAULT '{}',
+                            PRIMARY KEY (name, location)
+                        )
+                        """);
+                st.execute("""
+                DO $$
+                BEGIN
+                    IF NOT EXISTS (
+                        SELECT 1 FROM pg_constraint
+                        WHERE conname = 'sulfur_data_name_location_unique'
+                    ) THEN
+                        ALTER TABLE sulfur_data
+                        ADD CONSTRAINT sulfur_data_name_location_unique UNIQUE (name, location);
+                    END IF;
+                END;
+                $$;
+                """);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         new PlayerJoinListener();
         new ServerPingListener();
@@ -86,6 +133,9 @@ public class Sulfur {
                 ic.saveChunksToStorage().get();
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+            if (ds != null && !ds.isClosed()) {
+                ds.close();
             }
         }));
     }
@@ -128,7 +178,6 @@ public class Sulfur {
                     data.setPlugin(plugin);
                     data.setJarFile(jarFile);
                     loadedPlugins.put(data.getName(), data);
-                    pluginLookup.put(plugin, data);
                     plugin.onEnable();
                 } catch (ClassNotFoundException | InstantiationException |
                          IllegalAccessException | InvocationTargetException e) {
@@ -141,10 +190,10 @@ public class Sulfur {
     }
 
     public static File getDataFolder(Plugin plugin) {
-        LoadedPlugin loaded = pluginLookup.get(plugin);
-        if (loaded != null) {
-            return new File("plugins", loaded.getName());
-        }
-        return new File("plugins", "null");
+        for (LoadedPlugin loaded : loadedPlugins.values()) {
+            if (loaded.getPlugin() == plugin) {
+                return new File("plugins", loaded.getName());
+            }
+        } return new File("plugins", "null");
     }
 }
