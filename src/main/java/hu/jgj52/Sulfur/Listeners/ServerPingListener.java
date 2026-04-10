@@ -19,9 +19,7 @@ public class ServerPingListener extends Listener {
 
     public ServerPingListener() {
 
-        File file = new File("server-icon.png");
-
-        try (InputStream inputStream = new FileInputStream(file)) {
+        try (InputStream inputStream = new FileInputStream("server-icon.png")) {
 
             this.favicon = inputStream.readAllBytes();
 
@@ -50,13 +48,12 @@ public class ServerPingListener extends Listener {
             builder.sample(player.getName());
         }
 
-        Status.Builder builder1 = Status.builder()
-                .description(MiniMessage.miniMessage().deserialize(server.get("motd").getAsString()))
-                .playerInfo(builder.build())
-                .favicon(favicon);
-
         event.setStatus(
-                builder1.build()
+                Status.builder()
+                        .description(MiniMessage.miniMessage().deserialize(server.get("motd").getAsString()))
+                        .playerInfo(builder.build())
+                        .favicon(favicon)
+                        .build()
         );
 
     }
