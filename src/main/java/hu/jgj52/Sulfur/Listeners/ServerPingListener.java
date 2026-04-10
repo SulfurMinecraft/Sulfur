@@ -10,9 +10,33 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.server.ServerListPingEvent;
 import net.minestom.server.ping.Status;
 
+import java.io.*;
 import java.util.List;
 
 public class ServerPingListener extends Listener {
+
+    private byte[] favicon;
+
+    public ServerPingListener() {
+
+        File file = new File("server-icon.png");
+
+        try (InputStream inputStream = new FileInputStream(file)) {
+
+            this.favicon = inputStream.readAllBytes();
+
+        } catch (FileNotFoundException e) {
+
+            this.favicon = new byte[0];
+
+        } catch (IOException e) {
+
+            throw new RuntimeException(e);
+
+        }
+
+    }
+
     @Event
     public void onPing(ServerListPingEvent event) {
         JsonObject server = Sulfur.conf.get("server").getAsJsonObject();
@@ -25,11 +49,15 @@ public class ServerPingListener extends Listener {
         for (Player player : first5) {
             builder.sample(player.getName());
         }
+
+        Status.Builder builder1 = Status.builder()
+                .description(MiniMessage.miniMessage().deserialize(server.get("motd").getAsString()))
+                .playerInfo(builder.build())
+                .favicon(favicon);
+
         event.setStatus(
-                Status.builder()
-                        .description(MiniMessage.miniMessage().deserialize(server.get("motd").getAsString()))
-                        .playerInfo(builder.build())
-                        .build()
+                builder1.build()
         );
+
     }
 }
