@@ -7,6 +7,7 @@ import hu.jgj52.Sulfur.Utils.LoadedPlugin;
 import hu.jgj52.Sulfur.Utils.Plugin;
 import hu.jgj52.Sulfur.Utils.Server;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minestom.server.Auth;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
@@ -65,7 +66,10 @@ public class Sulfur {
 
         registerPlugins();
 
-        MinecraftServer.setBrandName(serverConf.get("brand").getAsString());
+        MinecraftServer.setBrandName(
+                serverConf.get("brand").getAsString()
+                        .replace("&", "§")
+        );
         server.start(serverConf.get("host").getAsString(), serverConf.get("port").getAsInt());
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
