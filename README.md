@@ -39,10 +39,11 @@ authors:
 version: 1.0
 ```
 **src/main/java/you/group/pluginName/Main.java**
+
 ```java
 package you.group.pluginName;
 
-import hu.jgj52.Sulfur.Utils.Plugin;
+import dev.sulfurmc.Sulfur.Utils.Plugin;
 
 public class Main implements Plugin {
     @Override

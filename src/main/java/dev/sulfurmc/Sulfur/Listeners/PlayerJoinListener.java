@@ -1,8 +1,8 @@
-package hu.jgj52.Sulfur.Listeners;
+package dev.sulfurmc.Sulfur.Listeners;
 
-import hu.jgj52.Sulfur.Sulfur;
-import hu.jgj52.Sulfur.Utils.Listeners.Event;
-import hu.jgj52.Sulfur.Utils.Listeners.Listener;
+import dev.sulfurmc.Sulfur.Sulfur;
+import dev.sulfurmc.Sulfur.Utils.Listeners.Event;
+import dev.sulfurmc.Sulfur.Utils.Listeners.Listener;
 import net.minestom.server.coordinate.BlockVec;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;

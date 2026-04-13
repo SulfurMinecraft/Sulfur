@@ -1,8 +1,8 @@
-package hu.jgj52.Sulfur.Commands;
+package dev.sulfurmc.Sulfur.Commands;
 
 import com.google.gson.JsonObject;
-import hu.jgj52.Sulfur.Utils.LoadedPlugin;
-import hu.jgj52.Sulfur.Sulfur;
+import dev.sulfurmc.Sulfur.Utils.LoadedPlugin;
+import dev.sulfurmc.Sulfur.Sulfur;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.minestom.server.command.builder.Command;

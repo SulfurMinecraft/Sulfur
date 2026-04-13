@@ -1,6 +1,6 @@
-package hu.jgj52.Sulfur.Utils;
+package dev.sulfurmc.Sulfur.Utils;
 
-import static hu.jgj52.Sulfur.Sulfur.loadedPlugins;
+import static dev.sulfurmc.Sulfur.Sulfur.loadedPlugins;
 
 public class Logger {
 

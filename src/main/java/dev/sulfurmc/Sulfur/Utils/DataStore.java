@@ -1,12 +1,12 @@
-package hu.jgj52.Sulfur.Utils;
+package dev.sulfurmc.Sulfur.Utils;
 
 import com.google.gson.*;
 
 import java.io.*;
 import java.sql.*;
 
-import static hu.jgj52.Sulfur.Sulfur.ds;
-import static hu.jgj52.Sulfur.Sulfur.local;
+import static dev.sulfurmc.Sulfur.Sulfur.ds;
+import static dev.sulfurmc.Sulfur.Sulfur.local;
 
 public class DataStore {
     private static final Gson gson = new Gson();

@@ -1,11 +1,12 @@
-package hu.jgj52.Sulfur;
+package dev.sulfurmc.Sulfur;
 
 import com.google.gson.*;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import hu.jgj52.Sulfur.Commands.*;
-import hu.jgj52.Sulfur.Listeners.*;
-import hu.jgj52.Sulfur.Utils.*;
+import dev.sulfurmc.Sulfur.Commands.*;
+import dev.sulfurmc.Sulfur.Listeners.*;
+import dev.sulfurmc.Sulfur.Utils.*;
+import dev.sulfurmc.Sulfur.Utils.Listeners.Listener;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -30,12 +31,8 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.util.*;
+import java.util.jar.*;
 
 public class Sulfur {
 
@@ -46,7 +43,7 @@ public class Sulfur {
     public static boolean local;
     public static HikariDataSource ds;
 
-    public static Map<Plugin, ArrayList<SulfurCommand>> registeredCommands = new HashMap<>();
+    public static List<SulfurCommand> registeredCommands = new ArrayList<>();
 
     static void main() {
         conf = new Server().getConfig();
@@ -150,14 +147,12 @@ public class Sulfur {
 
     public static void registerPlugins() {
 
-        unregisterCommands();
+        registeredCommands.forEach(c -> MinecraftServer.getCommandManager().unregister(c));
+        registeredCommands.clear();
 
-        loadedPlugins.forEach((s, loadedPlugin) -> {
+        Listener.unregisterAll();
 
-            loadedPlugin.getPlugin().onDisable();
-
-        });
-
+        loadedPlugins.forEach((_, loadedPlugin) -> loadedPlugin.getPlugin().onDisable());
         loadedPlugins.clear();
 
         File folder = new File("plugins");
@@ -206,22 +201,6 @@ public class Sulfur {
                 e.printStackTrace();
             }
         }
-    }
-
-    protected static void unregisterCommands() {
-
-        registeredCommands.forEach((plugin, commands) -> {
-
-            for (SulfurCommand command : new ArrayList<>(commands)) {
-
-                command.unregister();
-
-            }
-
-        });
-
-        registeredCommands.clear();
-
     }
 
     public static File getDataFolder(Plugin plugin) {

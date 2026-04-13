@@ -1,9 +1,9 @@
-package hu.jgj52.Sulfur.Utils;
+package dev.sulfurmc.Sulfur.Utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import hu.jgj52.Sulfur.Sulfur;
+import dev.sulfurmc.Sulfur.Sulfur;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -13,40 +13,25 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.jar.JarEntry;
 
 @SuppressWarnings("unchecked")
-public class Configuration {
-    private final File file;
-    private JsonObject config;
-    public Configuration(String name, Plugin plugin) {
-        LoadedPlugin loaded = null;
-        for (LoadedPlugin lp : Sulfur.loadedPlugins.values()) {
-            if (lp.getPlugin() == plugin) {
-                loaded = lp;
-                break;
-            }
-        }
-        if (loaded == null) {
-            file = null;
-            return;
-        }
-
-        file = new File("plugins" + File.separator + loaded.getName(), name + ".yml");
-
-        JarEntry entry = loaded.getJarFile().getJarEntry(name + ".yml");
-        if (entry == null) throw new RuntimeException(name + ".yml not in jar!");
+public class Server {
+    private final JsonObject config;
+    public Server() {
+        File file = new File("server.yml");
 
         Map<String, Object> defaults;
-        try (InputStream is = loaded.getJarFile().getInputStream(entry)) {
-            defaults = new Yaml().load(is);
+        try (InputStream defIn = Sulfur.class.getClassLoader()
+                .getResourceAsStream("server.yml")) {
+            if (defIn == null) throw new RuntimeException("server.yml not in jar!");
+            defaults = new Yaml().load(defIn);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            try (InputStream in = loaded.getJarFile().getInputStream(entry);
+            try (InputStream in = Sulfur.class.getClassLoader()
+                    .getResourceAsStream("server.yml");
                  FileOutputStream out = new FileOutputStream(file)) {
                 byte[] buffer = new byte[1024];
                 int bytesRead;
@@ -100,36 +85,5 @@ public class Configuration {
 
     public JsonObject getConfig() {
         return config;
-    }
-
-    @SuppressWarnings("unchecked")
-    public void saveConfig() {
-        if (file == null || config == null) return;
-        Gson gson = new Gson();
-        Map<String, Object> map = (Map<String, Object>) gson.fromJson(config, Map.class);
-
-        try (FileOutputStream out = new FileOutputStream(file)) {
-            String yaml = new Yaml().dump(map);
-            out.write(yaml.getBytes());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void reloadConfig() {
-        if (file == null) return;
-        Map<String, Object> existing;
-        try (InputStream in = new FileInputStream(file)) {
-            existing = new Yaml().load(in);
-            if (existing == null) existing = new java.util.HashMap<>();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(existing);
-        JsonElement element = gson.fromJson(jsonString, JsonElement.class);
-        if (!element.isJsonObject()) throw new RuntimeException("YAML root is not an object!");
-        config = element.getAsJsonObject();
     }
 }

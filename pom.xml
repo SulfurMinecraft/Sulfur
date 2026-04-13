@@ -35,7 +35,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>hu.jgj52.Sulfur.Sulfur</mainClass>
+                            <mainClass>dev.sulfurmc.Sulfur.Sulfur</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -54,7 +54,7 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>hu.jgj52.Sulfur.Sulfur</mainClass>
+                                    <mainClass>dev.sulfurmc.Sulfur.Sulfur</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

@@ -1,8 +1,8 @@
-package hu.jgj52.Sulfur.Listeners;
+package dev.sulfurmc.Sulfur.Listeners;
 
-import hu.jgj52.Sulfur.Permissions.User;
-import hu.jgj52.Sulfur.Utils.Listeners.Event;
-import hu.jgj52.Sulfur.Utils.Listeners.Listener;
+import dev.sulfurmc.Sulfur.Permissions.User;
+import dev.sulfurmc.Sulfur.Utils.Listeners.Event;
+import dev.sulfurmc.Sulfur.Utils.Listeners.Listener;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
 

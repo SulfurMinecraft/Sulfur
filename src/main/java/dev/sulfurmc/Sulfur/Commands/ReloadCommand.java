@@ -1,6 +1,6 @@
-package hu.jgj52.Sulfur.Commands;
+package dev.sulfurmc.Sulfur.Commands;
 
-import hu.jgj52.Sulfur.Sulfur;
+import dev.sulfurmc.Sulfur.Sulfur;
 import net.minestom.server.command.builder.Command;
 
 public class ReloadCommand extends Command {

@@ -1,7 +1,7 @@
-package hu.jgj52.Sulfur.Commands;
+package dev.sulfurmc.Sulfur.Commands;
 
-import hu.jgj52.Sulfur.Utils.LoadedPlugin;
-import hu.jgj52.Sulfur.Sulfur;
+import dev.sulfurmc.Sulfur.Utils.LoadedPlugin;
+import dev.sulfurmc.Sulfur.Sulfur;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;

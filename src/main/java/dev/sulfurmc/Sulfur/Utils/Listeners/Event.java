@@ -1,4 +1,4 @@
-package hu.jgj52.Sulfur.Utils.Listeners;
+package dev.sulfurmc.Sulfur.Utils.Listeners;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

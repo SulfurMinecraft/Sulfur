@@ -1,9 +1,9 @@
-package hu.jgj52.Sulfur.Listeners;
+package dev.sulfurmc.Sulfur.Listeners;
 
 import com.google.gson.JsonObject;
-import hu.jgj52.Sulfur.Sulfur;
-import hu.jgj52.Sulfur.Utils.Listeners.Event;
-import hu.jgj52.Sulfur.Utils.Listeners.Listener;
+import dev.sulfurmc.Sulfur.Sulfur;
+import dev.sulfurmc.Sulfur.Utils.Listeners.Event;
+import dev.sulfurmc.Sulfur.Utils.Listeners.Listener;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;

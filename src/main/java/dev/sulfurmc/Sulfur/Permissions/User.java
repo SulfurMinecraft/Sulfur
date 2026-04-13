@@ -1,11 +1,10 @@
-package hu.jgj52.Sulfur.Permissions;
+package dev.sulfurmc.Sulfur.Permissions;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import hu.jgj52.Sulfur.Utils.DataStore;
+import dev.sulfurmc.Sulfur.Utils.DataStore;
 import net.minestom.server.entity.Player;
 
-import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

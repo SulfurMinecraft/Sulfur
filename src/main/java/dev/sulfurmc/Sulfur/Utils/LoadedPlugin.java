@@ -1,6 +1,6 @@
-package hu.jgj52.Sulfur.Utils;
+package dev.sulfurmc.Sulfur.Utils;
 
-import hu.jgj52.Sulfur.Sulfur;
+import dev.sulfurmc.Sulfur.Sulfur;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;

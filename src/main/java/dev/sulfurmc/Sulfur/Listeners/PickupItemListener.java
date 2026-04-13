@@ -1,7 +1,7 @@
-package hu.jgj52.Sulfur.Listeners;
+package dev.sulfurmc.Sulfur.Listeners;
 
-import hu.jgj52.Sulfur.Utils.Listeners.Event;
-import hu.jgj52.Sulfur.Utils.Listeners.Listener;
+import dev.sulfurmc.Sulfur.Utils.Listeners.Event;
+import dev.sulfurmc.Sulfur.Utils.Listeners.Listener;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.item.PickupItemEvent;
