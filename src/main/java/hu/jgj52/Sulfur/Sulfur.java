@@ -8,8 +8,11 @@ import hu.jgj52.Sulfur.Listeners.*;
 import hu.jgj52.Sulfur.Utils.LoadedPlugin;
 import hu.jgj52.Sulfur.Utils.Plugin;
 import hu.jgj52.Sulfur.Utils.Server;
+import hu.jgj52.Sulfur.Utils.SulfurCommand;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.minestom.server.Auth;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
@@ -29,9 +32,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,12 +41,15 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class Sulfur {
+
     public static InstanceContainer ic;
     public static JsonObject conf;
     public static Map<String, LoadedPlugin> loadedPlugins = new HashMap<>();
     public static Auth auth;
     public static boolean local;
     public static HikariDataSource ds;
+
+    public static Map<Plugin, ArrayList<SulfurCommand>> registeredCommands = new HashMap<>();
 
     static void main() {
         conf = new Server().getConfig();
@@ -64,6 +69,16 @@ public class Sulfur {
         });
 
         ic.setChunkSupplier(LightingChunk::new);
+
+        MinecraftServer.getCommandManager().setUnknownCommandCallback((sender, command) -> {
+            sender.sendMessage(Component.translatable("command.unknown.command").color(NamedTextColor.RED));
+            sender.sendMessage(Component.text(command).decorate(TextDecoration.UNDERLINED).color(NamedTextColor.RED).append(Component.translatable("command.context.here").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, false)));
+        });
+
+        new PlayerJoinListener();
+        new ServerPingListener();
+        new PickupItemListener();
+        new ItemDropListener();
 
         if (!local) {
             JsonObject pgConf = serverConf.get("postgres").getAsJsonObject();
@@ -105,13 +120,9 @@ public class Sulfur {
             }
         }
 
-        new PlayerJoinListener();
-        new ServerPingListener();
-        new PickupItemListener();
-        new ItemDropListener();
-
         MinecraftServer.getCommandManager().register(new PluginsCommand());
         MinecraftServer.getCommandManager().register(new VersionCommand());
+        MinecraftServer.getCommandManager().register(new ReloadCommand());
 
         registerPlugins();
 
@@ -140,7 +151,18 @@ public class Sulfur {
         }));
     }
 
-    private static void registerPlugins() {
+    public static void registerPlugins() {
+
+        unregisterCommands();
+
+        loadedPlugins.forEach((s, loadedPlugin) -> {
+
+            loadedPlugin.getPlugin().onDisable();
+
+        });
+
+        loadedPlugins.clear();
+
         File folder = new File("plugins");
         try {
             if (!folder.exists()) Files.createDirectory(folder.toPath());
@@ -189,6 +211,22 @@ public class Sulfur {
         }
     }
 
+    protected static void unregisterCommands() {
+
+        registeredCommands.forEach((plugin, commands) -> {
+
+            for (SulfurCommand command : new ArrayList<>(commands)) {
+
+                command.unregister();
+
+            }
+
+        });
+
+        registeredCommands.clear();
+
+    }
+
     public static File getDataFolder(Plugin plugin) {
         for (LoadedPlugin loaded : loadedPlugins.values()) {
             if (loaded.getPlugin() == plugin) {
@@ -196,4 +234,5 @@ public class Sulfur {
             }
         } return new File("plugins", "null");
     }
+
 }
