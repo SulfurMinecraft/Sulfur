@@ -18,6 +18,7 @@ public class LoadedPlugin {
     private Component message;
     private Plugin plugin;
     private JarFile jarFile;
+    private String prefix;
 
     public LoadedPlugin() {
         this.main = "";
@@ -28,6 +29,7 @@ public class LoadedPlugin {
         this.message = Component.empty();
         this.plugin = null;
         this.jarFile = null;
+        this.prefix = "";
     }
 
     public String getMain() {
@@ -76,6 +78,18 @@ public class LoadedPlugin {
 
     public Component getMessage() {
         return message;
+    }
+
+    public void setPrefix(String prefix) {
+
+        this.prefix = prefix;
+
+    }
+
+    public String getPrefix() {
+
+        return prefix;
+
     }
 
     public void updateMessage() {

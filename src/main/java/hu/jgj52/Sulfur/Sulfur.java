@@ -5,10 +5,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import hu.jgj52.Sulfur.Commands.*;
 import hu.jgj52.Sulfur.Listeners.*;
-import hu.jgj52.Sulfur.Utils.LoadedPlugin;
-import hu.jgj52.Sulfur.Utils.Plugin;
-import hu.jgj52.Sulfur.Utils.Server;
-import hu.jgj52.Sulfur.Utils.SulfurCommand;
+import hu.jgj52.Sulfur.Utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -44,7 +41,7 @@ public class Sulfur {
 
     public static InstanceContainer ic;
     public static JsonObject conf;
-    public static Map<String, LoadedPlugin> loadedPlugins = new HashMap<>();
+    public static Map<Plugin, LoadedPlugin> loadedPlugins = new HashMap<>();
     public static Auth auth;
     public static boolean local;
     public static HikariDataSource ds;
@@ -199,7 +196,7 @@ public class Sulfur {
                     Plugin plugin = (Plugin) clazz.getDeclaredConstructors()[0].newInstance();
                     data.setPlugin(plugin);
                     data.setJarFile(jarFile);
-                    loadedPlugins.put(data.getName(), data);
+                    loadedPlugins.put(plugin, data);
                     plugin.onEnable();
                 } catch (ClassNotFoundException | InstantiationException |
                          IllegalAccessException | InvocationTargetException e) {
@@ -233,6 +230,12 @@ public class Sulfur {
                 return new File("plugins", loaded.getName());
             }
         } return new File("plugins", "null");
+    }
+
+    public static Logger getLogger(Plugin plugin) {
+
+        return new Logger(plugin);
+
     }
 
 }
