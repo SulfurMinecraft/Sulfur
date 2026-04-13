@@ -73,6 +73,7 @@ public class Sulfur {
         new ServerPingListener();
         new PickupItemListener();
         new ItemDropListener();
+        new UserListener();
 
         if (!local) {
             JsonObject pgConf = serverConf.get("postgres").getAsJsonObject();
@@ -118,7 +119,7 @@ public class Sulfur {
         MinecraftServer.getCommandManager().register(new VersionCommand());
         MinecraftServer.getCommandManager().register(new ReloadCommand());
 
-        registerPlugins();
+        registerPlugins(true);
 
         MinecraftServer.setBrandName(
                 serverConf.get("brand").getAsString()
@@ -145,15 +146,17 @@ public class Sulfur {
         }));
     }
 
-    public static void registerPlugins() {
+    public static void registerPlugins(boolean first) {
 
-        registeredCommands.forEach(c -> MinecraftServer.getCommandManager().unregister(c));
-        registeredCommands.clear();
+        if (!first) {
+            registeredCommands.forEach(c -> MinecraftServer.getCommandManager().unregister(c));
+            registeredCommands.clear();
 
-        Listener.unregisterAll();
+            Listener.unregisterAll();
 
-        loadedPlugins.forEach((_, loadedPlugin) -> loadedPlugin.getPlugin().onDisable());
-        loadedPlugins.clear();
+            loadedPlugins.forEach((_, loadedPlugin) -> loadedPlugin.getPlugin().onDisable());
+            loadedPlugins.clear();
+        }
 
         File folder = new File("plugins");
         try {

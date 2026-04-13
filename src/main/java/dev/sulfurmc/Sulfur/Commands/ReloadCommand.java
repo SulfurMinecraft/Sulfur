@@ -11,7 +11,7 @@ public class ReloadCommand extends Command {
 
         setDefaultExecutor((sender, context) -> {
 
-            Sulfur.registerPlugins();
+            Sulfur.registerPlugins(false);
 
             sender.sendMessage("Reloaded plugins successfully!");
 
