@@ -26,13 +26,13 @@ public class Logger {
 
     public void warning(Object message) {
 
-        System.out.println("\u001B[33m[WARNING] [" + prefix + "] " + message);
+        System.out.println("\u001B[33m[WARNING] [" + prefix + "] " + message + "\033[0m");
 
     }
 
     public void error(Object message) {
 
-        System.out.println("\u001B[31m[ERROR] [" + prefix + "] " + message);
+        System.out.println("\u001B[31m[ERROR] [" + prefix + "] " + message + "\033[0m");
 
     }
 
