@@ -1,6 +1,7 @@
 package dev.sulfurmc.Sulfur.Commands;
 
 import dev.sulfurmc.Sulfur.Sulfur;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minestom.server.command.builder.Command;
 
 public class ReloadCommand extends Command {
@@ -9,11 +10,13 @@ public class ReloadCommand extends Command {
 
         super("reload", "rl");
 
-        setDefaultExecutor((sender, context) -> {
+        setDefaultExecutor((sender, _) -> {
 
-            Sulfur.registerPlugins(false);
+            Sulfur.registerPlugins();
 
-            sender.sendMessage("Reloaded plugins successfully!");
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(
+                    Sulfur.conf.get("messages").getAsJsonObject().get("reloaded").getAsString()
+            ));
 
         });
 

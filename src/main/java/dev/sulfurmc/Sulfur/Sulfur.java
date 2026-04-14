@@ -69,12 +69,6 @@ public class Sulfur {
             sender.sendMessage(Component.text(command).decorate(TextDecoration.UNDERLINED).color(NamedTextColor.RED).append(Component.translatable("command.context.here").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, false)));
         });
 
-        new PlayerJoinListener();
-        new ServerPingListener();
-        new PickupItemListener();
-        new ItemDropListener();
-        new UserListener();
-
         if (!local) {
             JsonObject pgConf = serverConf.get("postgres").getAsJsonObject();
             HikariConfig config = new HikariConfig();
@@ -115,11 +109,7 @@ public class Sulfur {
             }
         }
 
-        MinecraftServer.getCommandManager().register(new PluginsCommand());
-        MinecraftServer.getCommandManager().register(new VersionCommand());
-        MinecraftServer.getCommandManager().register(new ReloadCommand());
-
-        registerPlugins(true);
+        registerPlugins();
 
         MinecraftServer.setBrandName(
                 serverConf.get("brand").getAsString()
@@ -146,17 +136,28 @@ public class Sulfur {
         }));
     }
 
-    public static void registerPlugins(boolean first) {
+    private static void register() {
+        new PlayerJoinListener();
+        new ServerPingListener();
+        new PickupItemListener();
+        new ItemDropListener();
+        new UserListener();
 
-        if (!first) {
-            registeredCommands.forEach(c -> MinecraftServer.getCommandManager().unregister(c));
-            registeredCommands.clear();
+        MinecraftServer.getCommandManager().register(new PluginsCommand());
+        MinecraftServer.getCommandManager().register(new VersionCommand());
+        MinecraftServer.getCommandManager().register(new ReloadCommand());
+    }
 
-            Listener.unregisterAll();
+    public static void registerPlugins() {
+        registeredCommands.forEach(c -> MinecraftServer.getCommandManager().unregister(c));
+        registeredCommands.clear();
 
-            loadedPlugins.forEach((_, loadedPlugin) -> loadedPlugin.getPlugin().onDisable());
-            loadedPlugins.clear();
-        }
+        Listener.unregisterAll();
+
+        loadedPlugins.forEach((_, loadedPlugin) -> loadedPlugin.getPlugin().onDisable());
+        loadedPlugins.clear();
+
+        register();
 
         File folder = new File("plugins");
         try {

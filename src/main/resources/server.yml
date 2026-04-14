@@ -22,3 +22,4 @@ messages:
   pluginNotFound: "<red>Plugin <plugin> not found!</red>"
   plugins: "<white><yellow>Sulfur</yellow> Plugins (<count>): </white>"
   version: "<white><name> version <green><version></green><newLine>Authors: <authors></white>"
+  reloaded: "<green>Plugins reloaded successfully!</green>"

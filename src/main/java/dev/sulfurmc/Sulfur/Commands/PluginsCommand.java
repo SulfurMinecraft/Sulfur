@@ -25,7 +25,7 @@ public class PluginsCommand extends Command {
                                 .clickEvent(ClickEvent.runCommand("/version " + plugin.getName()))
                                 .hoverEvent(HoverEvent.showText(
                                         Component.text(plugin.getVersion())
-                                                .color(plugin.getVersion().contains("SHAPSHOT") ? NamedTextColor.YELLOW : NamedTextColor.WHITE)
+                                                .color(plugin.getVersion().contains("SNAPSHOT") ? NamedTextColor.YELLOW : NamedTextColor.WHITE)
                                 ))
                 );
                 plugins = plugins.append(p);
