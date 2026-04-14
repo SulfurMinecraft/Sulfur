@@ -17,15 +17,15 @@ Here's an example:
 <repositories>
     <repository>
         <id>jgj52-repo</id>
-        <url>https://maven.jgj52.hu/repository/maven-releases/</url>
+        <url>https://maven.sulfurmc.dev/repository/maven-releases/</url>
     </repository>
 </repositories>
 
 <dependencies>
     <dependency>
-        <groupId>hu.jgj52</groupId>
+        <groupId>dev.sulfurmc</groupId>
         <artifactId>Sulfur</artifactId>
-        <version>1.5</version>
+        <version>1.7</version>
         <scope>provided</scope>
     </dependency>
 </dependencies>
