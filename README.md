@@ -16,7 +16,7 @@ Here's an example:
 ```xml
 <repositories>
     <repository>
-        <id>jgj52-repo</id>
+        <id>sulfur-repo</id>
         <url>https://maven.sulfurmc.dev/repository/maven-releases/</url>
     </repository>
 </repositories>
