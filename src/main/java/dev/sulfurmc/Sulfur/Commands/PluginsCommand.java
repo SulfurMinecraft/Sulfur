@@ -2,13 +2,15 @@ package dev.sulfurmc.Sulfur.Commands;
 
 import dev.sulfurmc.Sulfur.Utils.LoadedPlugin;
 import dev.sulfurmc.Sulfur.Sulfur;
+import dev.sulfurmc.Sulfur.Utils.SulfurCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;import net.minestom.server.command.builder.Command;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
-public class PluginsCommand extends Command {
+public class PluginsCommand extends SulfurCommand {
     public PluginsCommand() {
         super("plugins", "pl");
 

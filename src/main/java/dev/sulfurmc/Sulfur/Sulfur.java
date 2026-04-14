@@ -39,6 +39,7 @@ public class Sulfur {
     public static InstanceContainer ic;
     public static JsonObject conf;
     public static Map<Plugin, LoadedPlugin> loadedPlugins = new HashMap<>();
+    public static Map<String, LoadedPlugin> loadedPluginsByName = new HashMap<>();
     public static Auth auth;
     public static boolean local;
     public static HikariDataSource ds;
@@ -143,9 +144,9 @@ public class Sulfur {
         new ItemDropListener();
         new UserListener();
 
-        MinecraftServer.getCommandManager().register(new PluginsCommand());
-        MinecraftServer.getCommandManager().register(new VersionCommand());
-        MinecraftServer.getCommandManager().register(new ReloadCommand());
+        new PluginsCommand();
+        new VersionCommand();
+        new ReloadCommand();
     }
 
     public static void registerPlugins() {
@@ -154,7 +155,7 @@ public class Sulfur {
 
         Listener.unregisterAll();
 
-        loadedPlugins.forEach((_, loadedPlugin) -> loadedPlugin.getPlugin().onDisable());
+        loadedPlugins.keySet().forEach(Plugin::onDisable);
         loadedPlugins.clear();
 
         register();
@@ -196,6 +197,7 @@ public class Sulfur {
                     data.setPlugin(plugin);
                     data.setJarFile(jarFile);
                     loadedPlugins.put(plugin, data);
+                    loadedPluginsByName.put(data.getName(), data);
                     plugin.onEnable();
                 } catch (ClassNotFoundException | InstantiationException |
                          IllegalAccessException | InvocationTargetException e) {

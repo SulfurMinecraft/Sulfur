@@ -24,7 +24,6 @@ public class Listener {
                 E listener = new E(annotation.priority(), annotation.ignoreCancelled(), method, this);
 
                 List<E> listeners = registered.computeIfAbsent(type, t -> {
-
                     EventListener<? extends net.minestom.server.event.Event> listen = EventListener.builder(t)
                             .handler(event -> {
                                 for (E e : registered.getOrDefault(t, new ArrayList<>())) {
@@ -50,6 +49,7 @@ public class Listener {
     public static void unregisterAll() {
         listeners.forEach(geh::removeListener);
         listeners.clear();
+        registered.clear();
     }
 
     private record E(int priority, boolean ignoreCancelled, Method method, Listener l) {}

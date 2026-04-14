@@ -1,10 +1,10 @@
 package dev.sulfurmc.Sulfur.Commands;
 
 import dev.sulfurmc.Sulfur.Sulfur;
+import dev.sulfurmc.Sulfur.Utils.SulfurCommand;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.minestom.server.command.builder.Command;
 
-public class ReloadCommand extends Command {
+public class ReloadCommand extends SulfurCommand {
 
     public ReloadCommand() {
 
