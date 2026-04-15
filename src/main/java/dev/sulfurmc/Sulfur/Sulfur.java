@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import dev.sulfurmc.Sulfur.Commands.*;
 import dev.sulfurmc.Sulfur.Listeners.*;
+import dev.sulfurmc.Sulfur.Permissions.User;
 import dev.sulfurmc.Sulfur.Utils.*;
 import dev.sulfurmc.Sulfur.Utils.Listeners.Listener;
 import net.kyori.adventure.text.Component;
@@ -21,6 +22,7 @@ import net.minestom.server.instance.LightingChunk;
 import net.minestom.server.instance.anvil.AnvilLoader;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.generator.UnitModifier;
+import net.minestom.server.utils.identity.PermissionThing;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -64,6 +66,10 @@ public class Sulfur {
         });
 
         ic.setChunkSupplier(LightingChunk::new);
+
+        PermissionThing.setAdd((uuid, perm) -> new User(uuid).add(perm));
+        PermissionThing.setRemove((uuid, perm) -> new User(uuid).add(perm));
+        PermissionThing.setHas((uuid, perm) -> new User(uuid).has(perm));
 
         MinecraftServer.getCommandManager().setUnknownCommandCallback((sender, command) -> {
             sender.sendMessage(Component.translatable("command.unknown.command").color(NamedTextColor.RED));
