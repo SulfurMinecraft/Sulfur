@@ -25,11 +25,18 @@ public class PickBlockListener extends Listener {
 
         ItemStack item = ItemStack.of(material);
         boolean inHotbar = false;
+        boolean contains = false;
         int slot = 0;
 
         for (int i = 0; i < player.getInventory().getSize(); i++) {
 
             ItemStack itemStack = player.getInventory().getItemStack(i);
+
+            if (itemStack.material().equals(prevItem.material())) {
+
+                contains = true;
+
+            }
 
             if (itemStack.material().equals(material)) {
 
@@ -49,6 +56,8 @@ public class PickBlockListener extends Listener {
             }
 
         }
+
+        if (contains) prevItem = ItemStack.of(Material.AIR);
 
         if (!inHotbar) {
 
