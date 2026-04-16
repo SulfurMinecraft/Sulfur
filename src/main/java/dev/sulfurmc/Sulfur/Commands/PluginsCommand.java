@@ -17,7 +17,7 @@ public class PluginsCommand extends SulfurCommand {
         setDefaultExecutor((sender, _) -> {
             Component plugins = MiniMessage.miniMessage().deserialize(
                     Sulfur.conf.get("messages").getAsJsonObject().get("plugins").getAsString(),
-                    Placeholder.parsed("count", String.valueOf(Sulfur.loadedPlugins.size()))
+                    Placeholder.parsed("count", String.valueOf(Sulfur.loadedPlugins.size() + Sulfur.disabledPlugins.size()))
             );
             boolean first = true;
             for (LoadedPlugin plugin : Sulfur.loadedPlugins.values()) {
@@ -33,6 +33,21 @@ public class PluginsCommand extends SulfurCommand {
                 plugins = plugins.append(p);
                 first = false;
             }
+
+            for (String plugin : Sulfur.disabledPlugins) {
+
+                Component p = Component.text(first ? "" : ", ").color(NamedTextColor.WHITE).append(
+                        Component.text(plugin)
+                                .color(NamedTextColor.RED)
+                                .hoverEvent(HoverEvent.showText(
+                                        Component.text("Plugin disabled")
+                                                .color(NamedTextColor.RED)
+                                ))
+                );
+                plugins = plugins.append(p);
+
+            }
+
             sender.sendMessage(plugins);
         });
     }

@@ -41,14 +41,19 @@ public class Sulfur {
     public static InstanceContainer ic;
     public static JsonObject conf;
     public static Map<Plugin, LoadedPlugin> loadedPlugins = new HashMap<>();
+    public static ArrayList<String> disabledPlugins = new ArrayList<>();
     public static Map<String, LoadedPlugin> loadedPluginsByName = new HashMap<>();
     public static Auth auth;
     public static boolean local;
     public static HikariDataSource ds;
+    private static Logger logger;
 
     public static List<SulfurCommand> registeredCommands = new ArrayList<>();
 
     static void main(String[] args) {
+
+        logger = getLogger("Sulfur");
+
         conf = new Server().getConfig();
         JsonObject serverConf = conf.get("server").getAsJsonObject();
         local = !serverConf.get("storeInPostgres").getAsBoolean();
@@ -116,8 +121,6 @@ public class Sulfur {
             }
         }
 
-        registerPlugins();
-
         MinecraftServer.setBrandName(
                 serverConf.get("brand").getAsString()
                         .replace("&", "§")
@@ -141,6 +144,9 @@ public class Sulfur {
                 ds.close();
             }
         }));
+
+        registerPlugins();
+
     }
 
     private static void register() {
@@ -197,6 +203,8 @@ public class Sulfur {
             try (JarFile jarFile = new JarFile(jar)) {
                 JarEntry entry = jarFile.getJarEntry("plugin.yml");
 
+                String name = jar.getName();
+
                 if (entry == null) continue;
 
                 try (InputStream is = jarFile.getInputStream(entry)) {
@@ -206,12 +214,17 @@ public class Sulfur {
                     Plugin plugin = (Plugin) clazz.getDeclaredConstructors()[0].newInstance();
                     data.setPlugin(plugin);
                     data.setJarFile(jarFile);
+                    name = data.getName();
+                    plugin.onEnable();
                     loadedPlugins.put(plugin, data);
                     loadedPluginsByName.put(data.getName(), data);
-                    plugin.onEnable();
-                } catch (ClassNotFoundException | InstantiationException |
-                         IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
+                } catch (Throwable t) {
+
+                    logger.error("Failed to load " + name + "!");
+                    t.printStackTrace();
+
+                    disabledPlugins.add(name);
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -230,6 +243,18 @@ public class Sulfur {
     public static Logger getLogger(Plugin plugin) {
 
         return new Logger(plugin);
+
+    }
+
+    public static Logger getLogger(String prefix) {
+
+        return new Logger().setPrefix(prefix);
+
+    }
+
+    public static Logger getLogger() {
+
+        return new Logger();
 
     }
 
