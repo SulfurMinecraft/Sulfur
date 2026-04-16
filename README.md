@@ -8,7 +8,7 @@ This way, if you don't need crafting, you don't put in the crafting plugin.
 This makes it easier to keep the server lightweight.
 
 ### Plugins
-Sulfur supports plugins.
+Sulfur supports plugins. You can put them in by dragging their jar file to the plugins/ folder
 \
 Here's an example:
 
