@@ -8,7 +8,7 @@ import net.minestom.server.event.player.PlayerPickBlockEvent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 
-public class PickBlockEvent extends Listener {
+public class PickBlockListener extends Listener {
 
     @Event
     public void onPick(PlayerPickBlockEvent event) {
@@ -18,7 +18,8 @@ public class PickBlockEvent extends Listener {
 
         if (!player.getGameMode().equals(GameMode.CREATIVE)) return;
 
-        Material material = Material.fromKey(event.getBlock().name());
+        Material material = event.getBlock().registry().material();
+        if (material == null) return;
 
         if (player.getInventory().getItemStack(player.getHeldSlot()).material() == material) return;
 
