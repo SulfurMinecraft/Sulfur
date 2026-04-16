@@ -149,6 +149,7 @@ public class Sulfur {
         new PickupItemListener();
         new ItemDropListener();
         new UserListener();
+        new PickBlockEvent();
 
         new PluginsCommand();
         new VersionCommand();

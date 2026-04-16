@@ -14,7 +14,7 @@ public class PlayerJoinListener extends Listener {
     public void onJoin(AsyncPlayerConfigurationEvent event) {
         event.setSpawningInstance(Sulfur.ic);
 
-        event.getPlayer().setRespawnPoint(getHighestPoint(new Pos(0.5, 0, 0.5), event.getSpawningInstance()));
+        event.getPlayer().setRespawnPoint(getHighestPoint(new Pos(0, 0, 0), event.getSpawningInstance()).add(0.5d, 0.0d, 0.5d));
     }
 
     private static Pos getHighestPoint(Pos initialPosition, Instance instance) {
@@ -35,7 +35,7 @@ public class PlayerJoinListener extends Listener {
 
             BlockVec block = new BlockVec(
                     initialPosition.blockX(),
-                    y,
+                    Math.min(319, y),
                     initialPosition.blockZ()
             );
 
@@ -50,7 +50,7 @@ public class PlayerJoinListener extends Listener {
 
         return new Pos(
                 initialPosition.blockX(),
-                highest,
+                Math.min(319, Math.max(-64, highest + 1)),
                 initialPosition.blockZ()
         );
 
