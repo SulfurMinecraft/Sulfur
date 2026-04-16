@@ -8,13 +8,13 @@ public class Logger {
 
     public Logger(Plugin plugin) {
 
-        this.prefix = loadedPlugins.get(plugin).getPrefix();
+        if (plugin != null) this.prefix = loadedPlugins.get(plugin).getPrefix();
 
-        if (this.prefix == null || this.prefix.isEmpty()) {
+    }
 
-            this.prefix = "?";
+    public Logger() {
 
-        }
+        this.prefix = "?";
 
     }
 
@@ -33,6 +33,14 @@ public class Logger {
     public void error(Object message) {
 
         System.out.println("\u001B[31m[ERROR] [" + prefix + "] " + message + "\033[0m");
+
+    }
+
+    public Logger setPrefix(String prefix) {
+
+        this.prefix = prefix;
+
+        return this;
 
     }
 

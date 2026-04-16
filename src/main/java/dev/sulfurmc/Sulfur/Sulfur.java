@@ -48,7 +48,7 @@ public class Sulfur {
 
     public static List<SulfurCommand> registeredCommands = new ArrayList<>();
 
-    static void main() {
+    static void main(String[] args) {
         conf = new Server().getConfig();
         JsonObject serverConf = conf.get("server").getAsJsonObject();
         local = !serverConf.get("storeInPostgres").getAsBoolean();
@@ -144,16 +144,19 @@ public class Sulfur {
     }
 
     private static void register() {
+
         new PlayerJoinListener();
         new ServerPingListener();
         new PickupItemListener();
         new ItemDropListener();
         new UserListener();
         new PickBlockListener();
+        new ChatMessageListener();
 
         new PluginsCommand();
         new VersionCommand();
         new ReloadCommand();
+
     }
 
     public static void registerPlugins() {
