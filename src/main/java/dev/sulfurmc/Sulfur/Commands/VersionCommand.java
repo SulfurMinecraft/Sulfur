@@ -8,6 +8,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentType;
+import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 
 public class VersionCommand extends SulfurCommand {
     public VersionCommand() {
@@ -18,6 +19,11 @@ public class VersionCommand extends SulfurCommand {
         setDefaultExecutor((sender, _) -> sender.sendMessage(MiniMessage.miniMessage().deserialize(messages.get("notEnoughArgsInVersionCommand").getAsString())));
 
         Argument<String> arg = ArgumentType.String("plugin");
+        arg.setSuggestionCallback((_, _, suggestion) -> {
+            for (String p : Sulfur.loadedPluginsByName.keySet()) {
+                suggestion.addEntry(new SuggestionEntry(p));
+            }
+        });
         addSyntax((sender, context) -> {
             LoadedPlugin plugin = Sulfur.loadedPluginsByName.get(context.get(arg));
             if (plugin == null) {

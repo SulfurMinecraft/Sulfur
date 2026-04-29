@@ -166,6 +166,7 @@ public class Sulfur {
     }
 
     public static void registerPlugins() {
+
         registeredCommands.forEach(c -> MinecraftServer.getCommandManager().unregister(c));
         registeredCommands.clear();
 
@@ -173,6 +174,7 @@ public class Sulfur {
 
         loadedPlugins.keySet().forEach(Plugin::onDisable);
         loadedPlugins.clear();
+        loadedPluginsByName.clear();
 
         register();
 
@@ -182,54 +184,111 @@ public class Sulfur {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         File[] jars = folder.listFiles((_, name) -> name.endsWith(".jar"));
         if (jars == null) return;
 
-        URLClassLoader cl = new URLClassLoader(
-                Arrays.stream(jars)
-                        .map(jar -> {
-                            try {
-                                return jar.toURI().toURL();
-                            } catch (MalformedURLException e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-                        .toList()
-                        .toArray(new URL[0]),
-                Sulfur.class.getClassLoader()
-        );
+        Map<String, LoadedPlugin> toLoad = new HashMap<>();
 
         for (File jar : jars) {
             try (JarFile jarFile = new JarFile(jar)) {
+
                 JarEntry entry = jarFile.getJarEntry("plugin.yml");
-
-                String name = jar.getName();
-
                 if (entry == null) continue;
 
                 try (InputStream is = jarFile.getInputStream(entry)) {
                     LoadedPlugin data = new Yaml().loadAs(is, LoadedPlugin.class);
+                    data.setFile(jar);
 
-                    Class<?> clazz = cl.loadClass(data.getMain());
-                    Plugin plugin = (Plugin) clazz.getDeclaredConstructors()[0].newInstance();
-                    data.setPlugin(plugin);
-                    data.setJarFile(jarFile);
-                    name = data.getName();
-                    plugin.onEnable();
-                    loadedPlugins.put(plugin, data);
-                    loadedPluginsByName.put(data.getName(), data);
-                } catch (Throwable t) {
-
-                    logger.error("Failed to load " + name + "!");
-                    t.printStackTrace();
-
-                    disabledPlugins.add(name);
-
+                    toLoad.put(data.getName(), data);
                 }
-            } catch (IOException e) {
+
+            } catch (Exception e) {
+                logger.error("Failed to read plugin " + jar.getName());
                 e.printStackTrace();
             }
         }
+
+        List<LoadedPlugin> sorted = new ArrayList<>();
+        Set<String> visited = new HashSet<>();
+        Set<String> visiting = new HashSet<>();
+
+        for (LoadedPlugin plugin : toLoad.values()) {
+            topoVisit(plugin, toLoad, sorted, visited, visiting);
+        }
+
+        for (LoadedPlugin data : sorted) {
+            try {
+
+                List<ClassLoader> depLoaders = new ArrayList<>();
+
+                if (data.getDepend() != null) {
+                    for (String dep : data.getDepend()) {
+                        LoadedPlugin lp = loadedPluginsByName.get(dep);
+
+                        if (lp == null) {
+                            throw new RuntimeException("Missing dependency: " + dep + " for " + data.getName());
+                        }
+
+                        depLoaders.add(lp.getClassLoader());
+                    }
+                }
+
+                PluginClassLoader cl = new PluginClassLoader(
+                        new URL[]{data.getFile().toURI().toURL()},
+                        Sulfur.class.getClassLoader(),
+                        depLoaders
+                );
+
+                Class<?> clazz = cl.loadClass(data.getMain());
+                Plugin plugin = (Plugin) clazz.getDeclaredConstructor().newInstance();
+
+                data.setPlugin(plugin);
+                data.setClassLoader(cl);
+
+                plugin.onEnable();
+
+                loadedPlugins.put(plugin, data);
+                loadedPluginsByName.put(data.getName(), data);
+
+            } catch (Throwable t) {
+                logger.error("Failed to load " + data.getName());
+                t.printStackTrace();
+                disabledPlugins.add(data.getName());
+            }
+        }
+    }
+
+    private static void topoVisit(
+            LoadedPlugin plugin,
+            Map<String, LoadedPlugin> all,
+            List<LoadedPlugin> sorted,
+            Set<String> visited,
+            Set<String> visiting
+    ) {
+        String name = plugin.getName();
+
+        if (visited.contains(name)) return;
+
+        if (visiting.contains(name)) {
+            throw new RuntimeException("Circular dependency detected at " + name);
+        }
+
+        visiting.add(name);
+
+        if (plugin.getDepend() != null) {
+            for (String dep : plugin.getDepend()) {
+                LoadedPlugin depPlugin = all.get(dep);
+                if (depPlugin == null) {
+                    throw new RuntimeException("Missing dependency: " + dep + " for " + name);
+                }
+                topoVisit(depPlugin, all, sorted, visited, visiting);
+            }
+        }
+
+        visiting.remove(name);
+        visited.add(name);
+        sorted.add(plugin);
     }
 
     public static File getDataFolder(Plugin plugin) {
