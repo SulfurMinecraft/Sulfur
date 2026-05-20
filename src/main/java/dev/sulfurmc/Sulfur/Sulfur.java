@@ -3,6 +3,7 @@ package dev.sulfurmc.Sulfur;
 import com.google.gson.*;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import dev.sulfurmc.Sulfur.CLI.MainCLI;
 import dev.sulfurmc.Sulfur.Commands.*;
 import dev.sulfurmc.Sulfur.Listeners.*;
 import dev.sulfurmc.Sulfur.Permissions.User;
@@ -147,6 +148,14 @@ public class Sulfur {
 
         registerPlugins();
 
+        handleCli();
+
+    }
+
+    private static void handleCli() {
+
+        MainCLI.start();
+
     }
 
     private static void register() {
@@ -162,6 +171,7 @@ public class Sulfur {
         new PluginsCommand();
         new VersionCommand();
         new ReloadCommand();
+        new StopCommand();
 
     }
 
@@ -175,6 +185,8 @@ public class Sulfur {
         loadedPlugins.keySet().forEach(Plugin::onDisable);
         loadedPlugins.clear();
         loadedPluginsByName.clear();
+
+        disabledPlugins.clear();
 
         register();
 
@@ -197,6 +209,7 @@ public class Sulfur {
                 if (entry == null) continue;
 
                 try (InputStream is = jarFile.getInputStream(entry)) {
+
                     LoadedPlugin data = new Yaml().loadAs(is, LoadedPlugin.class);
                     data.setFile(jar);
 
